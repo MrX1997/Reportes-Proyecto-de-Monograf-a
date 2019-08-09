@@ -11,7 +11,7 @@
 ######################__________________Report 01__________________######################
 
 
-# In[ ]:
+# In[6]:
 
 
 #Packages
@@ -158,11 +158,11 @@ def Load_Files(file_1,file_2,N_sample=20000,classification=True):
         y=sample_objects['Z_VI']
         y=np.array(y,dtype=float)
         return X,y
-    
-    y=sample_objects['CLASS_PERSON']
-    y=y.replace([1, 4, 3, 30], [0,1,2,3]).values
-    y=np.array(y,dtype=float)
-    return X,y
+    else:  
+        y=sample_objects['CLASS_PERSON']
+        y=y.replace([1, 4, 3, 30], [0,1,2,3]).values
+        y=np.array(y,dtype=float)
+        return X,y
 
 
 # In[ ]:
