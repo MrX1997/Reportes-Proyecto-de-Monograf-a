@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[29]:
 
 
 # Jairo Andres Saavedra Alfonso
@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[26]:
+# In[ ]:
 
 
 #Packages
@@ -29,10 +29,10 @@ import torch.utils.data
 get_ipython().system('jupyter nbconvert --to python Weekly_Reports_CNN.ipynb')
 
 
-# In[4]:
+# In[28]:
 
 
-N_sample=1000
+N_sample=20000
 
 def Load_Files(file_1,file_2,N_sample,classification=True):
     hdul = fits.open(file_1) # Open file 1 -- 'truth_DR12Q.fits'
@@ -144,7 +144,7 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
     indi=np.concatenate((ind_star, ind_galaxy,ind_qso,ind_qso_bal), axis=None)
     indi1=ind.loc[indi].values
 
-    spectra_=np.zeros((N_sample,443))
+    spectra_=np.zeros((N_sample,886))
     j=0
     for i in indi:
         k=indi1[j,1]
@@ -153,14 +153,16 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
     spectra_=pd.DataFrame(spectra_)
     #X=spectra_.replace(-np.inf,0)
 
-    X=spectra.values
+    X=spectra_.values
     #X=X.values # Spectra
     mean_flx= np.ma.average(X[:,:443], weights=X[:,443:],axis=1)
-    ll=(X[:,:443]-mean_flx.reshape(1,-1))**2
-    aveflux=np.ma.average(ll, weights=spectra[:,443:])
+    print(mean_flx.reshape(1,-1).shape)
+    ll=(X[:,:443]-mean_flx.reshape(-1,1))**2
+
+    aveflux=np.ma.average(ll, weights=X[:,443:],axis=1)
     sflux = np.sqrt(aveflux)
-    X = (X[:,:443]-mean_flx.reshape(1,-1))/sflux.reshape(1,-1)
-    
+    X = (X[:,:443]-mean_flx.reshape(-1,1))/sflux.reshape(-1,1)
+    print(X.shape)
     if(classification!=True):
         y=sample_objects['Z_VI']
         y=np.array(y,dtype=float)
@@ -170,9 +172,11 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
         y=y.replace([1, 4, 3, 30], [0,1,2,3]).values
         y=np.array(y,dtype=float)
         return X,y
+    
+#X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 
 
-# In[5]:
+# In[21]:
 
 
 def Loader(X,y,N_sample,epoc=10):
@@ -206,14 +210,14 @@ def Loader(X,y,N_sample,epoc=10):
     return train_loader,test_loader,val_loader
 
 
-# In[6]:
+# In[22]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample,epoc=10)
 
 
-# In[9]:
+# In[ ]:
 
 
 # CNN for classification
