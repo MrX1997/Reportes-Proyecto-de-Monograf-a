@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[29]:
+# In[1]:
 
 
 # Jairo Andres Saavedra Alfonso
@@ -29,10 +29,10 @@ import torch.utils.data
 get_ipython().system('jupyter nbconvert --to python Weekly_Reports_CNN.ipynb')
 
 
-# In[28]:
+# In[ ]:
 
 
-N_sample=20000
+N_sample=40000
 
 def Load_Files(file_1,file_2,N_sample,classification=True):
     hdul = fits.open(file_1) # Open file 1 -- 'truth_DR12Q.fits'
@@ -176,7 +176,7 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
 #X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 
 
-# In[21]:
+# In[ ]:
 
 
 def Loader(X,y,N_sample,epoc=10):
@@ -210,7 +210,7 @@ def Loader(X,y,N_sample,epoc=10):
     return train_loader,test_loader,val_loader
 
 
-# In[22]:
+# In[ ]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
@@ -233,7 +233,7 @@ log_interval=10
 epoc=10
 class Net_C(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(Net_C, self).__init__()
         self.conv1 = nn.Conv1d(1, 100, 10,stride=2)
         self.conv2 = nn.Conv1d(100, 100, 10,stride=2)
         self.conv3 = nn.Conv1d(100, 100, 10,stride=2)
@@ -242,16 +242,21 @@ class Net_C(nn.Module):
         self.fc1 = nn.Linear(1800, 16)
         #self.fc1 = nn.Linear(10300, 16)
         self.fc2 = nn.Linear(16, 4)
+        self.dropout=nn.Dropout(0.5)
 
 
     def forward(self, x):
         in_size = x.size(0)
         x = self.pool(F.relu(self.conv1(x)))
+        x = self.dropout(x)
         x = self.pool(F.relu(self.conv2(x)))
+        x = self.dropout(x)
         x = self.pool(F.relu(self.conv3(x)))
+        x = self.dropout(x)
         x = self.pool(F.relu(self.conv4(x)))
         x = x.view(in_size, -1)
-        x = F.relu(self.fc1(x))        
+        x = F.relu(self.fc1(x))     
+        x = self.dropout(x)
         x = self.fc2(x)
         return F.log_softmax(x)
     
@@ -289,14 +294,14 @@ def train(epoch):
 
 # Training loop
 for i in range(epoc):
-    print('Epoc:',i,'/n')
+    print('Epoc:',i+1,'|n')
     train(i)
     
     
 print('Finished Training')
 
 
-# In[23]:
+# In[ ]:
 
 
 correct = 0
@@ -306,7 +311,7 @@ d1=[]
 with torch.no_grad():
     for data in test_loader:
         images, labels = data
-        outputs = net(images)
+        outputs = net_C(images)
         _, predicted = torch.max(outputs.data, 1)
         #print(predicted,predicted.shape)
         d.append(predicted)
@@ -324,7 +329,7 @@ y_test=torch.cat((d1[0],d1[1]),0)
 print(y_pred.shape)
 
 
-# In[24]:
+# In[ ]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -402,7 +407,7 @@ print('Recall:','Star:',round(r[0],4),'| Galaxy:',round(r[1],4),'| QSO:',round(r
 print('F_score:','Star:',round(f[0],4),'| Galaxy:',round(f[1],4),'| QSO:',round(f[2],4),'| QSO_BAL:',round(f[3],4))
 
 
-# In[1]:
+# In[ ]:
 
 
 """
