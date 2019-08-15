@@ -242,7 +242,7 @@ class Net_C(nn.Module):
         self.fc1 = nn.Linear(1800, 16)
         #self.fc1 = nn.Linear(10300, 16)
         self.fc2 = nn.Linear(16, 4)
-        self.dropout=nn.Dropout(0.25)
+        self.dropout=nn.Dropout(0.1)
 
 
     def forward(self, x):
@@ -272,6 +272,7 @@ print(net_C)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net_C.parameters(), lr=0.001)
 
+loss_=[]
 def train(epoch):
     #model.train()
     running_loss = 0.0
@@ -282,11 +283,16 @@ def train(epoch):
         
         output = net_C(data)
         loss = criterion(output, target)
+        
+        #for _ , (data_val,target_val) in enumerate(val_loader,0)
+            
         loss.backward()
         optimizer.step()
         
-        running_loss += loss.item()
-        print('Batch:',batch_idx,'<-->','Loss:',running_loss)
+        running_loss = loss.item()
+        loss_.append(running_loss)
+        print('Batch:',batch_idx+1,'<-->','Loss:',running_loss)
+        
         #if(batch_idx !=0):    # print every 2000 mini-batches
             #print('[%d, %5d] loss: %.3f' %(epoch + 1, i + 1, running_loss / 1000))
             #running_loss = 0.0
@@ -295,11 +301,22 @@ def train(epoch):
 
 # Training loop
 for i in range(epoc):
-    print('Epoc:',i+1,'|n')
+    print('Epoc:',i+1)
     train(i)
     
     
 print('Finished Training')
+
+loss_=np.asarray(loss_)
+
+epoch=np.linspace(0,len(loss_),len(loss_))
+
+plt.plot(epoch,loss_,label='Training loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Train Loss')
+plt.legenden()
+plt.savefig('Train_loss_Classification.jpg')
 
 
 # In[8]:
@@ -439,7 +456,7 @@ for i in range(4):
 
 class Net_R(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(Net_R, self).__init__()
         self.conv1 = nn.Conv1d(1, 100, 10,stride=2)
         self.conv2 = nn.Conv1d(100, 100, 10,stride=2)
         self.conv3 = nn.Conv1d(100, 100, 10,stride=2)
@@ -448,18 +465,25 @@ class Net_R(nn.Module):
         self.fc1 = nn.Linear(1800, 16)
         #self.fc1 = nn.Linear(10300, 16)
         self.fc2 = nn.Linear(16, 4)
+        self.dropout=nn.Dropout(0.1)
 
 
     def forward(self, x):
         in_size = x.size(0)
         x = self.pool(F.relu(self.conv1(x)))
+        ##x = self.dropout(x)
         x = self.pool(F.relu(self.conv2(x)))
+        #x = self.dropout(x)
         x = self.pool(F.relu(self.conv3(x)))
+        #x = self.dropout(x)
         x = self.pool(F.relu(self.conv4(x)))
+        x = self.dropout(x)
         x = x.view(in_size, -1)
-        x = F.relu(self.fc1(x))        
+        x = F.relu(self.fc1(x))     
+        x = self.dropout(x)
         x = self.fc2(x)
         return F.log_softmax(x)
+    
 
 
 # In[ ]:
@@ -475,9 +499,9 @@ train_loader,test_loader,val_loader=Loader(X,y,N_sample,epoc=10)
 net_R = Net_R()
 print(net_R)
 
-optimizer = torch.optim.SGD(net.parameters(), lr=0.2) #for Rgrss
+optimizer = torch.optim.SGD(net_R.parameters(), lr=0.2) #for Rgrss
 loss_func = torch.nn.MSELoss()  
-
+loss_=[]
 def train(epoch):
     #model.train()
     running_loss = 0.0
@@ -491,8 +515,9 @@ def train(epoch):
         loss.backward()
         optimizer.step()
         
-        running_loss += loss.item()
-        print('Batch:',batch_idx,'<-->','Loss:',running_loss)
+        running_loss = loss.item()
+        loss_.append(running_loss)
+        print('Batch:',batch_idx+1,'<-->','Loss:',running_loss)
         #if(batch_idx !=0):    # print every 2000 mini-batches
             #print('[%d, %5d] loss: %.3f' %(epoch + 1, i + 1, running_loss / 1000))
             #running_loss = 0.0
@@ -501,11 +526,22 @@ def train(epoch):
 
 # Training loop
 for i in range(epoc):
-    print('Epoc:',i,'/n')
+    print('Epoc:',i+1)
     train(i)
     
     
 print('Finished Training')
+
+loss_=np.asarray(loss_)
+
+epoch=np.linspace(0,len(loss_),len(loss_))
+
+plt.plot(epoch,loss_,label='Training loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Train Loss - Regression')
+plt.legenden()
+plt.savefig('Train_loss_Regression.jpg')
 
 
 # In[ ]:
@@ -534,6 +570,12 @@ print(d1[0].shape)
 y_pred=torch.cat((d[0],d[1]),0)
 y_test=torch.cat((d1[0],d1[1]),0)
 print(y_pred.shape)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
