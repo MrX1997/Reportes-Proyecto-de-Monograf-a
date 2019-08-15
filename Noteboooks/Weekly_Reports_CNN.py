@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[ ]:
+# In[2]:
 
 
 #Packages
@@ -29,7 +29,7 @@ import torch.utils.data
 get_ipython().system('jupyter nbconvert --to python Weekly_Reports_CNN.ipynb')
 
 
-# In[ ]:
+# In[3]:
 
 
 N_sample=40000
@@ -176,7 +176,7 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
 #X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 
 
-# In[ ]:
+# In[4]:
 
 
 def Loader(X,y,N_sample,epoc=10):
@@ -210,14 +210,14 @@ def Loader(X,y,N_sample,epoc=10):
     return train_loader,test_loader,val_loader
 
 
-# In[ ]:
+# In[5]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample,epoc=10)
 
 
-# In[ ]:
+# In[6]:
 
 
 # CNN for classification
@@ -242,18 +242,19 @@ class Net_C(nn.Module):
         self.fc1 = nn.Linear(1800, 16)
         #self.fc1 = nn.Linear(10300, 16)
         self.fc2 = nn.Linear(16, 4)
-        self.dropout=nn.Dropout(0.5)
+        self.dropout=nn.Dropout(0.25)
 
 
     def forward(self, x):
         in_size = x.size(0)
         x = self.pool(F.relu(self.conv1(x)))
-        x = self.dropout(x)
+        ##x = self.dropout(x)
         x = self.pool(F.relu(self.conv2(x)))
-        x = self.dropout(x)
+        #x = self.dropout(x)
         x = self.pool(F.relu(self.conv3(x)))
-        x = self.dropout(x)
+        #x = self.dropout(x)
         x = self.pool(F.relu(self.conv4(x)))
+        x = self.dropout(x)
         x = x.view(in_size, -1)
         x = F.relu(self.fc1(x))     
         x = self.dropout(x)
@@ -262,7 +263,7 @@ class Net_C(nn.Module):
     
 
 
-# In[ ]:
+# In[7]:
 
 
 net_C = Net_C()
@@ -301,7 +302,7 @@ for i in range(epoc):
 print('Finished Training')
 
 
-# In[ ]:
+# In[8]:
 
 
 correct = 0
@@ -329,7 +330,7 @@ y_test=torch.cat((d1[0],d1[1]),0)
 print(y_pred.shape)
 
 
-# In[ ]:
+# In[9]:
 
 
 from sklearn.metrics import confusion_matrix
