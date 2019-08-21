@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[10]:
 
 
 # Jairo Andres Saavedra Alfonso
@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[2]:
+# In[11]:
 
 
 #Packages
@@ -29,7 +29,7 @@ import torch.utils.data
 get_ipython().system('jupyter nbconvert --to python Weekly_Reports_CNN.ipynb')
 
 
-# In[3]:
+# In[12]:
 
 
 N_sample=40000
@@ -156,13 +156,14 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
     X=spectra_.values
     #X=X.values # Spectra
     mean_flx= np.ma.average(X[:,:443], weights=X[:,443:],axis=1)
-    print(mean_flx.reshape(1,-1).shape)
     ll=(X[:,:443]-mean_flx.reshape(-1,1))**2
 
     aveflux=np.ma.average(ll, weights=X[:,443:],axis=1)
     sflux = np.sqrt(aveflux)
     X = (X[:,:443]-mean_flx.reshape(-1,1))/sflux.reshape(-1,1)
-    print(X.shape)
+    
+    #print(X.shape)
+    
     if(classification!=True):
         y=sample_objects['Z_VI']
         y=np.array(y,dtype=float)
@@ -176,7 +177,7 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
 #X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 
 
-# In[4]:
+# In[13]:
 
 
 def Loader(X,y,N_sample,epoc=10):
@@ -207,17 +208,22 @@ def Loader(X,y,N_sample,epoc=10):
         val_data.append([Variable(torch.tensor(xv, dtype=torch.float)), torch.tensor(y_val[i], dtype=torch.long)])
     
     val_loader = torch.utils.data.DataLoader(val_data, shuffle=True, batch_size=batch_size)
+    
+    print('INFO')
+    print('Train shape:',y_train.shape[0])
+    print('Val shape:',y_val.shape[0])
+    print('Test shape:',y_test.shape[0])
     return train_loader,test_loader,val_loader
 
 
-# In[5]:
+# In[14]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample,epoc=10)
 
 
-# In[6]:
+# In[15]:
 
 
 # CNN for classification
@@ -263,7 +269,7 @@ class Net_C(nn.Module):
     
 
 
-# In[7]:
+# In[16]:
 
 
 net_C = Net_C()
@@ -307,6 +313,10 @@ for i in range(epoc):
     
 print('Finished Training')
 
+
+# In[17]:
+
+
 loss_=np.asarray(loss_)
 
 epoch=np.linspace(0,len(loss_),len(loss_))
@@ -315,11 +325,11 @@ plt.plot(epoch,loss_,label='Training loss')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.title('Train Loss')
-plt.legenden()
+plt.legend()
 plt.savefig('Train_loss_Classification.jpg')
 
 
-# In[8]:
+# In[18]:
 
 
 correct = 0
@@ -347,7 +357,7 @@ y_test=torch.cat((d1[0],d1[1]),0)
 print(y_pred.shape)
 
 
-# In[9]:
+# In[19]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -554,7 +564,7 @@ d1=[]
 with torch.no_grad():
     for data in test_loader:
         images, labels = data
-        outputs = net(images)
+        outputs = net_R(images)
         _, predicted = torch.max(outputs.data, 1)
         #print(predicted,predicted.shape)
         d.append(predicted)
