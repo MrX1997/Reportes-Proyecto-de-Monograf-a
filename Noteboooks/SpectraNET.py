@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[10]:
 
 
 # Jairo Andres Saavedra Alfonso
@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[ ]:
+# In[35]:
 
 
 #Packages
@@ -27,15 +27,25 @@ from torch.autograd import Variable
 import torch.utils.data
 import time
 
-get_ipython().system('jupyter nbconvert --to python SpectraNET.ipynb')
+#get_ipython().system('jupyter nbconvert --to python SpectraNET.ipynb')
+
+"""
+d=np.genfromtxt('TIME.txt')
+data=d[:,0]#X
+t=d[:,1]
+plt.scatter(data,time)
+fit= np.polyfit(data,time, 1)
+plt.plot(data,fit[0]*data+fit[1])
+print(fit)
+"""
 
 
-# In[ ]:
+# In[36]:
 
 
 start=time.time()
 
-N_sample=60000
+N_sample=80000
 
 def Load_Files(file_1,file_2,N_sample,classification=True):
     hdul = fits.open(file_1) # Open file 1 -- 'truth_DR12Q.fits'
@@ -176,7 +186,7 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
         return X,y
 
 
-# In[ ]:
+# In[13]:
 
 
 def Loader(X,y,N_sample,epoc=10):
@@ -215,14 +225,14 @@ def Loader(X,y,N_sample,epoc=10):
     return train_loader,test_loader,val_loader
 
 
-# In[ ]:
+# In[14]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample,epoc=10)
 
 
-# In[ ]:
+# In[15]:
 
 
 # CNN for classification
@@ -232,6 +242,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from sklearn.metrics import precision_recall_fscore_support
+
 
 learning_rate=0.01
 log_interval=10
@@ -268,7 +279,7 @@ class Net_C(nn.Module):
     
 
 
-# In[ ]:
+# In[16]:
 
 
 net_C = Net_C()
@@ -313,7 +324,7 @@ for i in range(epoc):
 print('Finished Training')
 
 
-# In[ ]:
+# In[17]:
 
 
 loss_=np.asarray(loss_)
@@ -326,9 +337,10 @@ plt.ylabel('Loss')
 plt.title('Train Loss')
 plt.legend()
 plt.savefig('Train_loss_Classification.jpg')
+plt.close()
 
 
-# In[ ]:
+# In[18]:
 
 
 
@@ -349,7 +361,7 @@ with torch.no_grad():
         correct += (predicted == labels).sum().item()
         
 
-print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
+
 #d=np.asarray(d)
 print(d[0].shape)
 print(d1[0].shape)
@@ -358,10 +370,10 @@ y_test=torch.cat((d1[0],d1[1]),0)
 print(y_pred.shape)
 
 
-# In[ ]:
+# In[20]:
 
 
-##### from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
 
 class_names=['Star','Galaxy','QSO','QSO_BAL']
@@ -423,6 +435,8 @@ np.set_printoptions(precision=2)
 #print(y_pred)
 plot_confusion_matrix(y_test, y_test, classes=class_names, title='Confusion matrix')
 plt.savefig('cm_train.png')
+
+plt.close()
 #plt.subplots(122)
 plot_confusion_matrix(y_test, y_pred, classes=class_names, title='Confusion matrix')
 plt.savefig('cm_test.png')
@@ -436,7 +450,15 @@ print('Recall:','Star:',round(r[0],4),'| Galaxy:',round(r[1],4),'| QSO:',round(r
 print('F_score:','Star:',round(f[0],4),'| Galaxy:',round(f[1],4),'| QSO:',round(f[2],4),'| QSO_BAL:',round(f[3],4))
 
 end = time.time()
-print('Running time:',end - start)
+
+f= open("TIME80k.txt","w+")
+f.write("Running Time: %f\r\n" % (end - start))
+f.write("Accuracy of the network on the test images: %d\r\n" % (100 * correct / total))
+f.close()
+
+import os
+cmd='shutdown 0'
+os.system(cmd)
 
 
 # In[ ]:
@@ -462,7 +484,6 @@ for i in range(4):
     print('Accuracy of %5s : %2d %%' % (
         classes[i], 100 * class_correct[i] / class_total[i]))
 
-"""
 
 
 # In[ ]:
@@ -795,6 +816,8 @@ plt.plot(fpr,tpr)
 
 
 # In[ ]:
+"""
+
 
 
 
