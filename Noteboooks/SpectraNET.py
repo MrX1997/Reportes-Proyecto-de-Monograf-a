@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[35]:
+# In[5]:
 
 
 #Packages
@@ -27,25 +27,15 @@ from torch.autograd import Variable
 import torch.utils.data
 import time
 
-#get_ipython().system('jupyter nbconvert --to python SpectraNET.ipynb')
-
-"""
-d=np.genfromtxt('TIME.txt')
-data=d[:,0]#X
-t=d[:,1]
-plt.scatter(data,time)
-fit= np.polyfit(data,time, 1)
-plt.plot(data,fit[0]*data+fit[1])
-print(fit)
-"""
+get_ipython().system('jupyter nbconvert --to python SpectraNET.ipynb')
 
 
-# In[36]:
+# In[40]:
 
 
 start=time.time()
 
-N_sample=80000
+N_sample=50000
 
 def Load_Files(file_1,file_2,N_sample,classification=True):
     hdul = fits.open(file_1) # Open file 1 -- 'truth_DR12Q.fits'
@@ -186,7 +176,7 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
         return X,y
 
 
-# In[13]:
+# In[41]:
 
 
 def Loader(X,y,N_sample,epoc=10):
@@ -225,14 +215,14 @@ def Loader(X,y,N_sample,epoc=10):
     return train_loader,test_loader,val_loader
 
 
-# In[14]:
+# In[42]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample,epoc=10)
 
 
-# In[15]:
+# In[ ]:
 
 
 # CNN for classification
@@ -244,8 +234,8 @@ import torch.optim as optim
 from sklearn.metrics import precision_recall_fscore_support
 
 
-learning_rate=0.01
-log_interval=10
+learning_rate=0.1
+#log_interval=10
 epoc=10
 class Net_C(nn.Module):
     def __init__(self):
@@ -258,7 +248,8 @@ class Net_C(nn.Module):
         self.fc1 = nn.Linear(1800, 16)
         #self.fc1 = nn.Linear(10300, 16)
         self.fc2 = nn.Linear(16, 4)
-        self.dropout=nn.Dropout(0.1)
+        self.dropout=nn.Dropout(0.25)
+        self.bn=nn.BatchNorm1d(16)
 
 
     def forward(self, x):
@@ -273,13 +264,14 @@ class Net_C(nn.Module):
         x = self.dropout(x)
         x = x.view(in_size, -1)
         x = F.relu(self.fc1(x))     
+        x = self.bn(x)
         x = self.dropout(x)
         x = self.fc2(x)
         return F.log_softmax(x)
     
 
 
-# In[16]:
+# In[ ]:
 
 
 net_C = Net_C()
@@ -287,6 +279,9 @@ print(net_C)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net_C.parameters(), lr=0.001)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=8, 
+                                             verbose=True, threshold=0.00001, threshold_mode='rel',
+                                             cooldown=1, min_lr=1e-8, eps=1e-08)
 
 loss_=[]
 def train(epoch):
@@ -313,7 +308,7 @@ def train(epoch):
             #print('[%d, %5d] loss: %.3f' %(epoch + 1, i + 1, running_loss / 1000))
             #running_loss = 0.0
     
-
+4
 
 # Training loop
 for i in range(epoc):
@@ -324,7 +319,7 @@ for i in range(epoc):
 print('Finished Training')
 
 
-# In[17]:
+# In[ ]:
 
 
 loss_=np.asarray(loss_)
@@ -337,10 +332,9 @@ plt.ylabel('Loss')
 plt.title('Train Loss')
 plt.legend()
 plt.savefig('Train_loss_Classification.jpg')
-plt.close()
 
 
-# In[18]:
+# In[ ]:
 
 
 
@@ -361,7 +355,7 @@ with torch.no_grad():
         correct += (predicted == labels).sum().item()
         
 
-
+print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
 #d=np.asarray(d)
 print(d[0].shape)
 print(d1[0].shape)
@@ -370,7 +364,7 @@ y_test=torch.cat((d1[0],d1[1]),0)
 print(y_pred.shape)
 
 
-# In[20]:
+# In[ ]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -435,8 +429,6 @@ np.set_printoptions(precision=2)
 #print(y_pred)
 plot_confusion_matrix(y_test, y_test, classes=class_names, title='Confusion matrix')
 plt.savefig('cm_train.png')
-
-plt.close()
 #plt.subplots(122)
 plot_confusion_matrix(y_test, y_pred, classes=class_names, title='Confusion matrix')
 plt.savefig('cm_test.png')
@@ -450,15 +442,7 @@ print('Recall:','Star:',round(r[0],4),'| Galaxy:',round(r[1],4),'| QSO:',round(r
 print('F_score:','Star:',round(f[0],4),'| Galaxy:',round(f[1],4),'| QSO:',round(f[2],4),'| QSO_BAL:',round(f[3],4))
 
 end = time.time()
-
-f= open("TIME80k.txt","w+")
-f.write("Running Time: %f\r\n" % (end - start))
-f.write("Accuracy of the network on the test images: %d\r\n" % (100 * correct / total))
-f.close()
-
-import os
-cmd='shutdown 0'
-os.system(cmd)
+print('Running time:',end - start)
 
 
 # In[ ]:
@@ -484,6 +468,7 @@ for i in range(4):
     print('Accuracy of %5s : %2d %%' % (
         classes[i], 100 * class_correct[i] / class_total[i]))
 
+"""
 
 
 # In[ ]:
@@ -816,8 +801,6 @@ plt.plot(fpr,tpr)
 
 
 # In[ ]:
-"""
-
 
 
 
