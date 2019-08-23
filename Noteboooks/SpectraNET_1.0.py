@@ -306,8 +306,6 @@ for i in range(epochs):
     running_loss = 0.0
     
     for batch_idx, (data, target) in enumerate(train_loader,0):
-        print(batch_idx)
-        print(data.shape)
         data, target = Variable(data), Variable(target)
 
         optimizer.zero_grad()
