@@ -297,6 +297,8 @@ loss_val=[]
 
 iterations=0 
 
+fi= open("tlvla.txt","w+")
+
 # Training loop
 for i in range(epochs):
     print('Epoc:',i+1)
@@ -336,9 +338,9 @@ for i in range(epochs):
                 # Get predictions from the maximum value
                 _, predicted = torch.max(outputs.data, 1)
                 
-                loss_val = criterion(outputs, labels) 
-                running_loss_val = loss_val.item()
-                loss_val.append(running_loss)
+                loss_v = criterion(outputs, labels) 
+                running_loss_val = loss_v.item()
+                loss_val.append(running_loss_val)
                 
 
                 # Total number of labels
@@ -350,11 +352,12 @@ for i in range(epochs):
 
             accuracy = 100 * correct / total
             if(iterations % 500 == 0):
-                print('Iteration: {} -- Trainning Loss: {} -- Validation loss: {} -- Accuracy: {} %'.format(iterations, loss.item(), loss_validation.item(), accuracy))
-                
+                fi.write('Iteration: {} -- Trainning Loss: {} -- Validation loss: {} -- Accuracy: {} %'.format(iterations, loss.item(), loss_v.item(), accuracy))
+                                
     scheduler.step(accuracy)
     
 
+fi.close()
     
 print('Finished Training')
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[8]:
+# In[30]:
 
 
 # Jairo Andres Saavedra Alfonso
@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[1]:
+# In[31]:
 
 
 #Packages
@@ -38,12 +38,26 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
 
-# In[10]:
+# In[6]:
+
+
+N_sample=80000
+batch_size=480
+n_iter=10000
+
+test_size=0.2 # 20%
+val_size=0.25 # 25% of trainning size
+
+n_train=int(N_sample*(1-test_size)*(1-val_size))
+epochs = int(n_iter / (n_train / batch_size))
+
+print('Epochs:{} -- Batch size:{}'.format(epochs,batch_size))
+
+
+# In[7]:
 
 
 start=time.time()
-
-N_sample=80000
 
 def Load_Files(file_1,file_2,N_sample,classification=True):
     hdul = fits.open(file_1) # Open file 1 -- 'truth_DR12Q.fits'
@@ -140,10 +154,10 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
     qsos=obj.loc[obj['CLASS_PERSON']==3]
     qsos_bal=obj.loc[obj['CLASS_PERSON']==30]
 
-    sample_star=stars.sample(n=int(N_sample/4),weights='CLASS_PERSON', random_state=5)
-    sample_galaxy=galaxies.sample(n=int(N_sample/4),weights='CLASS_PERSON', random_state=5)
-    sample_qso=qsos.sample(n=int(N_sample/4),weights='CLASS_PERSON', random_state=5)
-    sample_qso_bal=qsos_bal.sample(n=int(N_sample/4),weights='CLASS_PERSON', random_state=5)
+    sample_star=stars.sample(n=int(N_sample/4),weights='CLASS_PERSON')
+    sample_galaxy=galaxies.sample(n=int(N_sample/4),weights='CLASS_PERSON')
+    sample_qso=qsos.sample(n=int(N_sample/4),weights='CLASS_PERSON')
+    sample_qso_bal=qsos_bal.sample(n=int(N_sample/4),weights='CLASS_PERSON')
 
     sample_objects=pd.concat([sample_star,sample_galaxy,sample_qso,sample_qso_bal])
 
@@ -159,7 +173,7 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
     j=0
     for i in indi:
         k=indi1[j,1]
-        spectra_[j,:]=spectra[k,:]#np.log(abs(spectra[k,:443]))
+        spectra_[j,:]=spectra[k,:]
         j=j+1    
     spectra_=pd.DataFrame(spectra_)
     X=spectra_.values
@@ -184,15 +198,14 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
         return X,y
 
 
-# In[11]:
+# In[8]:
 
 
-def Loader(X,y,N_sample,epoc=10):
+def Loader(X,y,N_sample):
+
     
-    batch_size=int(N_sample/epoc)
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=1)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=val_size, random_state=1)
     
     train_data = []
     
@@ -223,14 +236,14 @@ def Loader(X,y,N_sample,epoc=10):
     return train_loader,test_loader,val_loader
 
 
-# In[12]:
+# In[9]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
-train_loader,test_loader,val_loader=Loader(X,y,N_sample,epoc=10)
+train_loader,test_loader,val_loader=Loader(X,y,N_sample)
 
 
-# In[13]:
+# In[10]:
 
 
 # CNN for classification
@@ -243,8 +256,7 @@ from sklearn.metrics import precision_recall_fscore_support
 
 
 learning_rate=0.1
-log_interval=10
-epoc=10
+
 class Net_C(nn.Module):
     def __init__(self):
         super(Net_C, self).__init__()
@@ -279,33 +291,38 @@ class Net_C(nn.Module):
     
 
 
-# In[ ]:
+# In[24]:
 
 
 net_C = Net_C()
 print(net_C)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(net_C.parameters(), lr=0.001)
+optimizer = optim.Adam(net_C.parameters(), lr=learning_rate)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=8, 
                                              verbose=True, threshold=0.00001, threshold_mode='rel',
                                              cooldown=1, min_lr=1e-8, eps=1e-08)
 
 loss_=[]
-def train(epoch):
-    #model.train()
-    scheduler.step(0)
+loss_val=[]
+
+iterations=0 
+
+# Training loop
+for i in range(epochs):
+    print('Epoc:',i+1)
+
     running_loss = 0.0
+    
     for batch_idx, (data, target) in enumerate(train_loader,0):
+        print(batch_idx)
+        print(data.shape)
         data, target = Variable(data), Variable(target)
-       
+
         optimizer.zero_grad()
         
         output = net_C(data)
-        loss = criterion(output, target)
-        
-        #for _ , (data_val,target_val) in enumerate(val_loader,0)
-            
+        loss = criterion(output, target)  
         loss.backward()
         optimizer.step()
         
@@ -313,16 +330,42 @@ def train(epoch):
         loss_.append(running_loss)
         print('Batch:',batch_idx+1,'<-->','Loss:',running_loss)
         
-        #if(batch_idx !=0):    # print every 2000 mini-batches
-            #print('[%d, %5d] loss: %.3f' %(epoch + 1, i + 1, running_loss / 1000))
-            #running_loss = 0.0
+        iterations+=1
+        
+        if(iterations % 60 == 0):
+            # Calculate Accuracy         
+            correct = 0
+            total = 0
+            # Iterate through test dataset
+            for images, labels in val_loader:
+                
+                images, labels = Variable(images), Variable(labels)
+                
+                # Forward pass only to get logits/output
+                outputs = net_C(images)
+
+                # Get predictions from the maximum value
+                _, predicted = torch.max(outputs.data, 1)
+                
+                loss_val = criterion(outputs, labels) 
+                running_loss_val = loss_val.item()
+                loss_val.append(running_loss)
+                
+
+                # Total number of labels
+                total += labels.size(0)
+
+                # Total correct predictions
+                # Without .item(), it is a uint8 tensor which will not work when you pass this number to the scheduler
+                correct += (predicted == labels).sum().item()
+
+            accuracy = 100 * correct / total
+            if(iterations % 500 == 0):
+                print('Iteration: {} -- Trainning Loss: {} -- Validation loss: {} -- Accuracy: {} %'.format(iterations, loss.item(), loss_validation.item(), accuracy))
+                
+    scheduler.step(accuracy)
     
 
-# Training loop
-for i in range(epoc):
-    print('Epoc:',i+1)
-    train(i)
-    
     
 print('Finished Training')
 
@@ -340,6 +383,23 @@ plt.ylabel('Loss')
 plt.title('Train Loss')
 plt.legend()
 plt.savefig('Train_loss_Classification.jpg')
+plt.close()
+
+
+# In[ ]:
+
+
+loss_val=np.asarray(loss_val)
+
+epoch=np.linspace(0,len(loss_val),len(loss_val))
+
+plt.plot(epoch,loss_,label='Training loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Validation Loss')
+plt.legend()
+plt.savefig('Validation_loss_Classification.jpg')
+plt.close()
 
 
 # In[ ]:
@@ -351,6 +411,7 @@ correct = 0
 total = 0
 d=[]
 d1=[]
+
 with torch.no_grad():
     for data in test_loader:
         images, labels = data
@@ -451,6 +512,15 @@ print('F_score:','Star:',round(f[0],4),'| Galaxy:',round(f[1],4),'| QSO:',round(
 
 end = time.time()
 print('Running time:',end - start)
+
+f= open("80k.txt","w+")
+f.write('Time {}'.format(end-start))
+f.write('Accuracy {}'.format(100 * correct / total))
+f.write('Presicion {}'.format(p))
+f.write('Recall {}'.format(r))
+f.write('F1 {}'.format(f))
+f.write('Support {}'.format(s))
+f.close()
 
 
 # In[ ]:
