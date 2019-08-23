@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[10]:
+# In[8]:
 
 
 # Jairo Andres Saavedra Alfonso
@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[5]:
+# In[1]:
 
 
 #Packages
@@ -26,16 +26,24 @@ from sklearn.model_selection import train_test_split
 from torch.autograd import Variable
 import torch.utils.data
 import time
+import os
 
-get_ipython().system('jupyter nbconvert --to python SpectraNET.ipynb')
+cmd='jupyter nbconvert --to python SpectraNET.ipynb'
+os.system(cmd)
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+# Assuming that we are on a CUDA machine, this should print a CUDA device:
+
+print(device)
 
 
-# In[40]:
+# In[10]:
 
 
 start=time.time()
 
-N_sample=50000
+N_sample=80000
 
 def Load_Files(file_1,file_2,N_sample,classification=True):
     hdul = fits.open(file_1) # Open file 1 -- 'truth_DR12Q.fits'
@@ -176,7 +184,7 @@ def Load_Files(file_1,file_2,N_sample,classification=True):
         return X,y
 
 
-# In[41]:
+# In[11]:
 
 
 def Loader(X,y,N_sample,epoc=10):
@@ -215,14 +223,14 @@ def Loader(X,y,N_sample,epoc=10):
     return train_loader,test_loader,val_loader
 
 
-# In[42]:
+# In[12]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,classification=True)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample,epoc=10)
 
 
-# In[ ]:
+# In[13]:
 
 
 # CNN for classification
@@ -235,7 +243,7 @@ from sklearn.metrics import precision_recall_fscore_support
 
 
 learning_rate=0.1
-#log_interval=10
+log_interval=10
 epoc=10
 class Net_C(nn.Module):
     def __init__(self):
@@ -286,6 +294,7 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', fa
 loss_=[]
 def train(epoch):
     #model.train()
+    scheduler.step(0)
     running_loss = 0.0
     for batch_idx, (data, target) in enumerate(train_loader,0):
         data, target = Variable(data), Variable(target)
@@ -308,7 +317,6 @@ def train(epoch):
             #print('[%d, %5d] loss: %.3f' %(epoch + 1, i + 1, running_loss / 1000))
             #running_loss = 0.0
     
-4
 
 # Training loop
 for i in range(epoc):
