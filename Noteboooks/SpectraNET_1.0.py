@@ -34,8 +34,8 @@ N_sample=80000
 batch_size=480
 n_iter=10000
 
-test_size=0.2 # 20%
-val_size=0.25 # 25% of trainning size
+test_size=0.2 # 20% of the total data
+val_size=0.25 # 25% of trainning size (20% of the total data)
 
 n_train=int(N_sample*(1-test_size)*(1-val_size))
 epochs = int(n_iter / (n_train / batch_size))
@@ -301,7 +301,7 @@ fi= open("tlvla.txt","w+")
 
 # Training loop
 for i in range(epochs):
-    print('Epoc:',i+1)
+    fi.write('Epoch:{}'.format(i+1))
 
     running_loss = 0.0
     
@@ -319,8 +319,6 @@ for i in range(epochs):
         
         running_loss = loss.item()
         loss_.append(running_loss)
-        print('Batch:',batch_idx+1,'<-->','Loss:',running_loss)
-        
         iterations+=1
         
         if(iterations % 60 == 0):
@@ -351,8 +349,8 @@ for i in range(epochs):
                 correct += (predicted == labels).sum().item()
 
             accuracy = 100 * correct / total
-            if(iterations % 500 == 0):
-                fi.write('Iteration: {} -- Trainning Loss: {} -- Validation loss: {} -- Accuracy: {} %'.format(iterations, loss.item(), loss_v.item(), accuracy))
+            if(iterations % 20 == 0):
+                fi.write('Batch: {} -- Iteration: {} -- Trainning Loss: {} -- Validation loss: {} -- Accuracy: {} % \n'.format(batch_idx+1, iterations, loss.item(), loss_v.item(), accuracy))
                                 
     scheduler.step(accuracy)
     
@@ -514,8 +512,8 @@ f.write('F1 {}'.format(f))
 f.write('Support {}'.format(s))
 f.close()
 
-cmd='shutdown 0'
-os.system(cmd)
+#cmd='shutdown 0'
+#os.system(cmd)
 
 
 # In[ ]:

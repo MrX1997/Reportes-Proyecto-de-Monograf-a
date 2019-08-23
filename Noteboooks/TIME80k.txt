@@ -1,0 +1,2 @@
+Running Time: 5808.415418
+Accuracy of the network on the test images: 87
