@@ -301,7 +301,7 @@ fi= open("tlvla.txt","w+")
 
 # Training loop
 for i in range(epochs):
-    fi.write('Epoch:{}'.format(i+1))
+    fi.write('Epoch:{} \n'.format(i+1))
 
     running_loss = 0.0
     
@@ -363,9 +363,9 @@ print('Finished Training')
 
 loss_=np.asarray(loss_)
 
-epoch=np.linspace(0,len(loss_),len(loss_))
+iters=np.linspace(0,len(loss_),len(loss_))
 
-plt.plot(epoch,loss_,label='Training loss')
+plt.plot(iters,loss_,label='Training loss')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.title('Train Loss')
@@ -379,9 +379,9 @@ plt.close()
 
 loss_val=np.asarray(loss_val)
 
-epoch=np.linspace(0,len(loss_val),len(loss_val))
+iters=np.linspace(0,len(loss_val),len(loss_val))
 
-plt.plot(epoch,loss_,label='Training loss')
+plt.plot(iters,loss_val,label='Training loss')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.title('Validation Loss')
