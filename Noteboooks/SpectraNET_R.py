@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[1]:
+# In[55]:
 
 
 #Packages
@@ -41,7 +41,7 @@ print('This net is brought to you by',device)
 # In[2]:
 
 
-N_sample=10000
+N_sample=80000
 batch_size=480
 n_iter=10000
 
@@ -57,7 +57,7 @@ print('INFO: Epochs:{} -- Batch size:{}'.format(epochs,batch_size))
 # In[3]:
 
 
-#start=time.time()
+start=time.time()
 
 def Load_Files(file_1,file_2,N_sample,objts,classification=True):
     hdul = fits.open(file_1) # Open file 1 -- 'truth_DR12Q.fits'
@@ -291,7 +291,7 @@ X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO'],classificati
 train_loader,test_loader,val_loader=Loader(X,y,N_sample)
 
 
-# In[10]:
+# In[53]:
 
 
 class Net_R(nn.Module):
@@ -324,11 +324,11 @@ class Net_R(nn.Module):
         x = self.dropout(x)
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
-        return F.log_softmax(x)
+        return x
     
 
 
-# In[11]:
+# In[54]:
 
 
 import torch
@@ -347,6 +347,8 @@ print(net_R)
 
 optimizer = torch.optim.SGD(net_R.parameters(), lr=0.2) #for Rgrss
 loss_func = torch.nn.SmoothL1Loss()
+
+
 loss_=[]
 def train(epoch):
     #model.train()
@@ -383,14 +385,14 @@ loss_=np.asarray(loss_)
 epoch=np.linspace(0,len(loss_),len(loss_))
 
 plt.plot(epoch,loss_,label='Training loss')
-plt.xlabel('Epoch')
+plt.xlabel('Iterations')
 plt.ylabel('Loss')
 plt.title('Train Loss - Regression')
 plt.legend()
 plt.savefig('Train_loss_Regression.jpg')
 
 
-# In[12]:
+# In[ ]:
 
 
 correct = 0
@@ -401,29 +403,37 @@ with torch.no_grad():
     for data in test_loader:
         images, labels = data
         outputs = net_R(images)
-        _, predicted = torch.max(outputs.data, 1)
+        #_, predicted = torch.max(outputs.data, 1)
         #print(predicted,predicted.shape)
-        d.append(predicted)
+        outputs=outputs.view(outputs.size(0),-1)
+        d.append(outputs)
         d1.append(labels)
-        #total += labels.size(0)
-        #correct += (predicted == labels).sum().item()
+
         
 
 #print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
 #d=np.asarray(d)
-print(d[0].shape)
+
+#print(d[0])
+d=d[0]
+d=d.reshape(1,-1)
 print(d1[0].shape)
-y_pred=d
-y_test=d1
+print(d[0])
+y_pred=d[0]
+y_test=d1[0]
+
+end=time.time()
+df=end-start
+print('Time:',df)
 
 
-# In[13]:
+# In[ ]:
 
 
-from sklearn import metrics
-print(y_pred[0],y_test[0])
-fpr, tpr, thresholds = metrics.roc_curve(y_pred, y_test)
-plt.plot(fpr,tpr)
+#from sklearn import metrics
+#print(y_pred,y_test)
+#fpr, tpr, thresholds = metrics.roc_curve(y_pred, y_test)
+#plt.plot(fpr,tpr)
 
 
 # In[ ]:
