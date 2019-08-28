@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 # Jairo Andres Saavedra Alfonso
@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[55]:
+# In[ ]:
 
 
 #Packages
@@ -38,10 +38,10 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('This net is brought to you by',device)
 
 
-# In[2]:
+# In[ ]:
 
 
-N_sample=80000
+N_sample=20000
 batch_size=480
 n_iter=10000
 
@@ -54,7 +54,7 @@ epochs = int(n_iter / (n_train / batch_size))
 print('INFO: Epochs:{} -- Batch size:{}'.format(epochs,batch_size))
 
 
-# In[3]:
+# In[ ]:
 
 
 start=time.time()
@@ -284,14 +284,14 @@ def Loader(X,y,N_sample):
     return train_loader,test_loader,val_loader
 
 
-# In[4]:
+# In[ ]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO'],classification=False)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample)
 
 
-# In[53]:
+# In[ ]:
 
 
 class Net_R(nn.Module):
@@ -302,7 +302,7 @@ class Net_R(nn.Module):
         self.conv3 = nn.Conv1d(128, 256, 10,stride=2)
         self.conv4 = nn.Conv1d(256, 256, 10,stride=2)
         self.pool = nn.MaxPool1d(2, 1)
-        self.fc1 = nn.Linear(4608, 128)
+        self.fc1 = nn.Linear(4608, 1)
         #self.fc1 = nn.Linear(10300, 16)
         self.fc2 = nn.Linear(128, 4)
         self.fc3 = nn.Linear(4, 1)
@@ -320,15 +320,16 @@ class Net_R(nn.Module):
         x = self.pool(F.relu(self.conv4(x)))
         x = self.dropout(x)
         x = x.view(in_size, -1)
-        x = F.relu(self.fc1(x))     
-        x = self.dropout(x)
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = self.fc1(x)
+        #x = F.relu(self.fc1(x))     
+        #x = self.dropout(x)
+        #x = F.relu(self.fc2(x))
+        #x = self.fc3(x)
         return x
     
 
 
-# In[54]:
+# In[ ]:
 
 
 import torch
