@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[ ]:
+# In[1]:
 
 
 #Packages
@@ -38,10 +38,10 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('This net is brought to you by',device)
 
 
-# In[ ]:
+# In[16]:
 
 
-N_sample=20000
+N_sample=10000
 batch_size=480
 n_iter=10000
 
@@ -54,7 +54,7 @@ epochs = int(n_iter / (n_train / batch_size))
 print('INFO: Epochs:{} -- Batch size:{}'.format(epochs,batch_size))
 
 
-# In[ ]:
+# In[21]:
 
 
 start=time.time()
@@ -199,8 +199,12 @@ def Load_Files(file_1,file_2,N_sample,objts,classification=True):
         X = (X[:,:443]-mean_flx.reshape(-1,1))/sflux.reshape(-1,1)        
         
         y=sample_objects['Z_VI']
+        #y_max=torch.max(y)
+        #y=y/y_max
         y=np.array(y,dtype=float)
-        
+        y_max=np.max(y)
+        y=y/y_max
+        print(y)
         return X,y
             
     stars=obj.loc[obj['CLASS_PERSON']==1]
@@ -284,14 +288,14 @@ def Loader(X,y,N_sample):
     return train_loader,test_loader,val_loader
 
 
-# In[ ]:
+# In[22]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO'],classification=False)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample)
 
 
-# In[ ]:
+# In[23]:
 
 
 class Net_R(nn.Module):
@@ -302,11 +306,12 @@ class Net_R(nn.Module):
         self.conv3 = nn.Conv1d(128, 256, 10,stride=2)
         self.conv4 = nn.Conv1d(256, 256, 10,stride=2)
         self.pool = nn.MaxPool1d(2, 1)
-        self.fc1 = nn.Linear(4608, 1)
+        self.fc1 = nn.Linear(4608, 128)
+        self.bn=nn.BatchNorm1d(128)
         #self.fc1 = nn.Linear(10300, 16)
-        self.fc2 = nn.Linear(128, 4)
-        self.fc3 = nn.Linear(4, 1)
-        self.dropout=nn.Dropout(0.1)
+        self.fc2 = nn.Linear(128, 16)
+        self.fc3 = nn.Linear(16, 1)
+        self.dropout=nn.Dropout(0.5)
 
 
     def forward(self, x):
@@ -320,16 +325,17 @@ class Net_R(nn.Module):
         x = self.pool(F.relu(self.conv4(x)))
         x = self.dropout(x)
         x = x.view(in_size, -1)
-        x = self.fc1(x)
-        #x = F.relu(self.fc1(x))     
-        #x = self.dropout(x)
-        #x = F.relu(self.fc2(x))
-        #x = self.fc3(x)
+        #x = self.fc1(x)
+        x = F.relu(self.fc1(x))     
+        x = self.bn(x)
+        x = F.relu(self.fc2(x))
+        x = self.dropout(x)
+        x = self.fc3(x)
         return x
     
 
 
-# In[ ]:
+# In[27]:
 
 
 import torch
@@ -347,7 +353,7 @@ net_R = Net_R()
 print(net_R)
 
 optimizer = torch.optim.SGD(net_R.parameters(), lr=0.2) #for Rgrss
-loss_func = torch.nn.SmoothL1Loss()
+loss_func = torch.nn.L1Loss()
 
 
 loss_=[]
