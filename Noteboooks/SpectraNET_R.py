@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 # Jairo Andres Saavedra Alfonso
@@ -12,7 +12,7 @@
 # Beta 1.0
 
 
-# In[1]:
+# In[3]:
 
 
 #Packages
@@ -38,7 +38,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('This net is brought to you by',device)
 
 
-# In[16]:
+# In[4]:
 
 
 N_sample=10000
@@ -54,7 +54,7 @@ epochs = int(n_iter / (n_train / batch_size))
 print('INFO: Epochs:{} -- Batch size:{}'.format(epochs,batch_size))
 
 
-# In[21]:
+# In[5]:
 
 
 start=time.time()
@@ -288,14 +288,14 @@ def Loader(X,y,N_sample):
     return train_loader,test_loader,val_loader
 
 
-# In[22]:
+# In[6]:
 
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO'],classification=False)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample)
 
 
-# In[23]:
+# In[7]:
 
 
 class Net_R(nn.Module):
@@ -335,7 +335,7 @@ class Net_R(nn.Module):
     
 
 
-# In[27]:
+# In[8]:
 
 
 import torch
@@ -399,7 +399,7 @@ plt.legend()
 plt.savefig('Train_loss_Regression.jpg')
 
 
-# In[ ]:
+# In[11]:
 
 
 correct = 0
@@ -424,7 +424,7 @@ with torch.no_grad():
 #print(d[0])
 d=d[0]
 d=d.reshape(1,-1)
-print(d1[0].shape)
+print(d1[0])
 print(d[0])
 y_pred=d[0]
 y_test=d1[0]
@@ -434,7 +434,7 @@ df=end-start
 print('Time:',df)
 
 
-# In[ ]:
+# In[10]:
 
 
 #from sklearn import metrics
