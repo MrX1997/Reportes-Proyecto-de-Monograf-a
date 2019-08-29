@@ -23,13 +23,14 @@ import pandas as pd
 import torch 
 import torch.nn as nn
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 from torch.autograd import Variable
 import torch.utils.data
 import time
 import os
 
-cmd='jupyter nbconvert --to python SpectraNET_R.ipynb'
-os.system(cmd)
+#cmd='jupyter nbconvert --to python SpectraNET_R.ipynb'
+#os.system(cmd)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -449,7 +450,7 @@ with torch.no_grad():
 d=d[0]
 d=d.reshape(1,-1)
 
-y_pred=d[0]
+fffy_pred=d[0]
 y_test=d1[0]
 
 end=time.time()
