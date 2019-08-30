@@ -301,7 +301,7 @@ def Loader(X,y,N_sample):
 # In[11]:
 
 
-X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO','QSO_BAL'],classification=False)
+X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO'],classification=False)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample)
 
 
