@@ -24,6 +24,8 @@ import torch
 import torch.nn as nn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import r2_score
 from torch.autograd import Variable
 import torch.utils.data
 import time
@@ -42,7 +44,7 @@ print('This net is brought to you by',device)
 # In[4]:
 
 
-N_sample=20000
+N_sample=80000
 batch_size=480
 n_iter=10000
 
@@ -52,7 +54,7 @@ val_size=0.25 # 25% of trainning size
 n_train=int(N_sample*(1-test_size)*(1-val_size))
 epochs = int(n_iter / (n_train / batch_size))
 
-f= open("Trainning_INFO_Regression.txt","w+")
+f= open("Trainning_INFO_Regression_80k_QSO.txt","w+")
 
 f.write('INFO: Epochs:{} -- Batch size:{} \n'.format(epochs,batch_size))
 
@@ -62,7 +64,7 @@ f.write('INFO: Epochs:{} -- Batch size:{} \n'.format(epochs,batch_size))
 
 start=time.time()
 
-def Load_Files(file_1,file_2,N_sample,objts,classification=True):
+def Load_Files(file_1,file_2,N_sample,objts,classification=False):
     hdul = fits.open(file_1) # Open file 1 -- 'truth_DR12Q.fits'
     info=hdul.info() # File info
     columns=hdul[1].columns # File Columns 
@@ -299,7 +301,7 @@ def Loader(X,y,N_sample):
 # In[11]:
 
 
-X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO_BAL'],classification=False)
+X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO','QSO_BAL'],classification=False)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample)
 
 
@@ -420,7 +422,7 @@ plt.xlabel('Iterations')
 plt.ylabel('Loss')
 plt.title('Train Loss - Regression')
 plt.legend()
-plt.savefig('Train_loss_Regression.jpg')
+plt.savefig('Train_loss_Regression_80k_QSO.jpg')
 plt.close()
 
 
@@ -441,40 +443,31 @@ with torch.no_grad():
         d.append(outputs)
         d1.append(labels)
 
-        
-
-#print('Accuracy of the network on the test images: %d %%' % (100 * correct / total))
-#d=np.asarray(d)
-
-#print(d[0])
 d=d[0]
 d=d.reshape(1,-1)
 
-fffy_pred=d[0]
+y_pred=d[0]
 y_test=d1[0]
 
-end=time.time()
-df=end-start
-f.write('Time: {}'.format(df))
 
 
 # In[17]:
 
 
-MSE_Test=mean_squared_error_(y_pred,y_test)
+MSE_Test=mean_squared_error(y_pred,y_test)
+MAE_Test=mean_absolute_error(y_pred,y_test)
+R2_Test=r2_score(y_pred,y_test)
 
-f.write('MSE: {} \n'.format(MSE))
+f.write('MSE: {} \n'.format(MSE_Test))
+f.write('MAE: {} \n'.format(MAE_Test))
+f.write('R2: {} \n'.format(R2_Test))
+end=time.time()
+df=end-start
+f.write('Time: {}'.format(df))
+
 f.close()
 
 
-# In[ ]:
 
-
-
-
-
-# In[ ]:
-
-
-
-
+cmd='shutdown 0'
+os.system(cmd)
