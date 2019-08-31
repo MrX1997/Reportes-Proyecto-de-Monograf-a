@@ -44,7 +44,7 @@ print('This net is brought to you by',device)
 # In[4]:
 
 
-N_sample=80000
+N_sample=29000
 batch_size=480
 n_iter=10000
 
@@ -54,7 +54,7 @@ val_size=0.25 # 25% of trainning size
 n_train=int(N_sample*(1-test_size)*(1-val_size))
 epochs = int(n_iter / (n_train / batch_size))
 
-f= open("Trainning_INFO_Regression_80k_QSO.txt","w+")
+f= open("Trainning_INFO_Regression_29k_QSOBAL.txt","w+")
 
 f.write('INFO: Epochs:{} -- Batch size:{} \n'.format(epochs,batch_size))
 
@@ -250,9 +250,9 @@ def Load_Files(file_1,file_2,N_sample,objts,classification=False):
     
     #Renormalize spectra
     
-    mean_flx= np.ma.average(X[:,:443], weights=X[:,443:],axis=1)
+    mean_flx= np.ma.average(X[:,:443], axis=1)#weights=X[:,443:],axis=1)
     ll=(X[:,:443]-mean_flx.reshape(-1,1))**2
-    aveflux=np.ma.average(ll, weights=X[:,443:],axis=1)
+    aveflux=np.ma.average(ll,axis=1)# weights=X[:,443:],axis=1)
     sflux = np.sqrt(aveflux)
     X = (X[:,:443]-mean_flx.reshape(-1,1))/sflux.reshape(-1,1)
 
@@ -301,7 +301,7 @@ def Loader(X,y,N_sample):
 # In[11]:
 
 
-X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO'],classification=False)
+X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO_BAL'],classification=False)
 train_loader,test_loader,val_loader=Loader(X,y,N_sample)
 
 
@@ -422,7 +422,7 @@ plt.xlabel('Iterations')
 plt.ylabel('Loss')
 plt.title('Train Loss - Regression')
 plt.legend()
-plt.savefig('Train_loss_Regression_80k_QSO.jpg')
+plt.savefig('Train_loss_Regression_29k_QSOBAL.jpg')
 plt.close()
 
 
@@ -469,5 +469,5 @@ f.close()
 
 
 
-cmd='shutdown 0'
-os.system(cmd)
+#cmd='shutdown 0'
+#os.system(cmd)

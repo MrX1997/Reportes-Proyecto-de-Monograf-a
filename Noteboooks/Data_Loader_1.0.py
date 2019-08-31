@@ -20,26 +20,26 @@ import numpy as np
 import matplotlib.pylab as plt
 import pandas as pd
 from astropy.table import Table
-get_ipython().system('jupyter nbconvert --to python Data_Loader_01.ipynb')
+get_ipython().system('jupyter nbconvert --to python Data_Loader_1.0.ipynb')
 
 
 # In[3]:
 
-def Load_Files(file_1,file_2);
-	hdul = fits.open(file_1) # Open file 'truth_DR12Q.fits'
-	info=hdul.info() # File info
-	columns=hdul[1].columns # File Columns 
-	print(info,'/n',columns)
-	data=hdul[1].data # Database of spectra with human-expert classifications 
+
+hdul = fits.open('truth_DR12Q.fits') # Open file
+info=hdul.info() # File info
+columns=hdul[1].columns # File Columns 
+print(info,'/n',columns)
+data=hdul[1].data # Database of spectra with human-expert classifications 
 
 
-	# Reading data from data_dr12.fits. This file had the spectra from data dr12. 
-	hdul_2 = fits.open(file_2) # Open file
-	info=hdul_2.info() # File info 
-	columns=hdul_2[1].columns # File Columns		 
-	print(hdul,'/n',columns)
-	data2=hdul_2[1].data # Database of spectra
-	spectra=hdul_2[0].data # Spectrum of each object 
+# Reading data from data_dr12.fits. This file had the spectra from data dr12. 
+hdul_2 = fits.open('data_dr12.fits') # Open file
+info=hdul_2.info() # File info 
+columns=hdul_2[1].columns # File Columns 
+print(hdul,'/n',columns)
+data2=hdul_2[1].data # Database of spectra
+spectra=hdul_2[0].data # Spectrum of each object 
 
 
 # In[4]:
@@ -151,6 +151,8 @@ T_ID=T_ID[i]
 
 ii=C_P==3
 oo=C_P==30
+ee=C_P==4
+Z_VI_G=Z_VI[ee]
 Z_VI_QSO=Z_VI[ii]
 Z_VI_QSO_BAL=Z_VI[oo]
 plt.hist(Z_VI_QSO,100,density=True)
@@ -785,102 +787,6 @@ print(ip[0,0], ip[0].shape)
 #for i in enumerate(ip,0):
     
     
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
 
 # In[ ]:
