@@ -44,17 +44,17 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('This net is brought to you by',device)
 
 
-N_sample=80000
-batch_size=480
+N_sample=1000
+batch_size=50
 n_iter=10000
 
 test_size=0.2 # 20%
 val_size=0.25 # 25% of trainning size
 
 n_train=int(N_sample*(1-test_size)*(1-val_size))
-epochs = int(n_iter / (n_train / batch_size))
+epochs = 10# int(n_iter / (n_train / batch_size))
 
-f= open("Trainning_INFO_Regression_80k_QSO.txt","w+")
+f= open("Trainning_INFO_.txt","w+")
 
 f.write('INFO: Epochs:{} -- Batch size:{} \n'.format(epochs,batch_size))
 
@@ -174,7 +174,7 @@ plt.xlabel('Iterations')
 plt.ylabel('Loss')
 plt.title('Train Loss - Regression')
 plt.legend()
-plt.savefig('Training_Loss_Regression_80k_QSO.jpg')
+plt.savefig('Training_Loss_Regression_.jpg')
 plt.close()
 
 
@@ -188,6 +188,7 @@ with torch.no_grad():
     for data in test_loader:
         images, labels = data
         outputs = net_R(images)
+        print(labels.shape,outputs.shape)
         #_, predicted = torch.max(outputs.data, 1)
         #print(predicted,predicted.shape)
         outputs=outputs.view(outputs.size(0),-1)
@@ -200,9 +201,11 @@ d=d.reshape(1,-1)
 y_pred=d[0]
 y_test=d1[0]
 
-
+print(y_pred.shape,y_test.shape)
 y_pred=torch.Tensor.numpy(y_pred)
 y_test=torch.Tensor.numpy(y_test)
+
+
 
 x = y_test
 y = y_pred
@@ -226,7 +229,7 @@ plt.setp(ax_marg_y.get_yticklabels(), visible=False)
 ax_joint.set_xlabel('Z_in')
 ax_joint.set_ylabel('Z_out')
 plt.legend()
-plt.savefig('Z_in_vs_Z_out_80k_QSO.jpg')
+plt.savefig('Z_in_vs_Z_out_.jpg')
 plt.close()
 
 AE=(abs(y_pred-y_test)*100)/(y_test)
@@ -236,7 +239,7 @@ plt.xlabel('Z_in')
 plt.ylabel('Absolute Error')
 plt.title('Absolute Error')
 plt.legend()
-plt.savefig('AE_vs_Z_in_80k_QSO.jpg')
+plt.savefig('AE_vs_Z_in_.jpg')
 plt.close()
 
 MSE_Test=mean_squared_error(y_pred,y_test)
