@@ -134,6 +134,7 @@ print('INFO: SpectraNET for regression: {}'.format(net_R))
 optimizer = torch.optim.SGD(net_R.parameters(), lr=learning_rate) #for Rgrss
 loss_func = torch.nn.MSELoss()
 
+# Impruve LR https://discuss.pytorch.org/t/confused-about-set-grad-enabled/38417 https://www.deeplearningwizard.com/deep_learning/boosting_models_pytorch/lr_scheduling/#reduce-on-loss-plateau-decay  https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
 
 loss_=[]
 def train(epochs):
