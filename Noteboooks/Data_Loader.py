@@ -258,10 +258,14 @@ def Data_Loader(X, y, N_sample, batch_size, test_size, val_size):
         val_data.append([Variable(torch.tensor(xv, dtype=torch.float)), torch.tensor(y_val[i], dtype=torch.float)])
     
     val_loader = torch.utils.data.DataLoader(val_data, shuffle=True, batch_size=batch_size_val)
+
+    train_s=y_train.shape[0]
+    test_s=y_test.shape[0]
+    val_s=y_val.shape[0]
     
     print('INFO:')
     print('Data Train: {}'.format(y_train.shape[0]))
     print('Data Validation: {}'.format(y_val.shape[0]))
     print('Data Test: {}'.format(y_test.shape[0]))
-    return train_loader,test_loader,val_loader
+    return train_loader,test_loader,val_loader,train_s,test_s,val_s
 
