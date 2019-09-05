@@ -241,27 +241,30 @@ def Data_Loader(X, y, N_sample, batch_size, test_size, val_size,classification=T
     
     for i in range(y_train.shape[0]):
         xt=X_train[i,:].reshape(1,-1)
-        #if(classification==True):
-            #train_data.append([Variable(torch.tensor(xt, dtype=torch.float)), torch.tensor(y_train[i], dtype=torch.long)])
-        train_data.append([Variable(torch.tensor(xt, dtype=torch.float)), torch.tensor(y_train[i], dtype=torch.long)])
+        if(classification==True):
+            train_data.append([Variable(torch.tensor(xt, dtype=torch.float)), torch.tensor(y_train[i], dtype=torch.long)])
+        else:
+            train_data.append([Variable(torch.tensor(xt, dtype=torch.float)), torch.tensor(y_train[i], dtype=torch.float)])
     
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=batch_size)
 
     test_data = []
     for i in range(y_test.shape[0]):
         xtst=X_test[i,:].reshape(1,-1)
-        #if(classification==True):
-            #test_data.append([Variable(torch.tensor(xtst, dtype=torch.float)), torch.tensor(y_test[i], dtype=torch.long)])
-        test_data.append([Variable(torch.tensor(xtst, dtype=torch.float)), torch.tensor(y_test[i], dtype=torch.long)])
+        if(classification==True):
+            test_data.append([Variable(torch.tensor(xtst, dtype=torch.float)), torch.tensor(y_test[i], dtype=torch.long)])
+        else:
+            test_data.append([Variable(torch.tensor(xtst, dtype=torch.float)), torch.tensor(y_test[i], dtype=torch.float)])
     
     test_loader = torch.utils.data.DataLoader(test_data, shuffle=True, batch_size=batch_size_test)
     
     val_data = []
     for i in range(y_val.shape[0]):
         xv=X_val[i,:].reshape(1,-1)
-        #if(classification==True):
-            #val_data.append([Variable(torch.tensor(xv, dtype=torch.float)), torch.tensor(y_val[i], dtype=torch.long)])
-        val_data.append([Variable(torch.tensor(xv, dtype=torch.float)), torch.tensor(y_val[i], dtype=torch.long)])
+        if(classification==True):
+            val_data.append([Variable(torch.tensor(xv, dtype=torch.float)), torch.tensor(y_val[i], dtype=torch.long)])
+        else:
+            val_data.append([Variable(torch.tensor(xv, dtype=torch.float)), torch.tensor(y_val[i], dtype=torch.float)])
     
     val_loader = torch.utils.data.DataLoader(val_data, shuffle=True, batch_size=batch_size_val)
 

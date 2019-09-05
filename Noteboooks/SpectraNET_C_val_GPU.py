@@ -51,14 +51,14 @@ print('This net is brought to you by',device)
 # In[3]:
 
 
-N_sample=1000#80000
-batch_size=50#480
+N_sample=80000#1000
+batch_size=480#50
 n_iter=10000  
 test_size=0.2 # 20%
 val_size=0.25 # 25% of trainning size
 
 n_train=int(N_sample*(1-test_size)*(1-val_size))
-epochs = 5#int(n_iter / (n_train / batch_size))
+epochs = int(n_iter / (n_train / batch_size))
 
 
 
