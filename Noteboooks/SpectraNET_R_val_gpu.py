@@ -32,6 +32,7 @@ import time
 import os
 from Data_Loader import Data_Loader,Load_Files
 from matplotlib.gridspec import GridSpec
+from torch.optim.lr_scheduler import StepLR
 
 
 #cmd='jupyter nbconvert --to python SpectraNET_R.ipynb'
@@ -53,7 +54,7 @@ val_size=0.25 # 25% of trainning size
 
 n_train=int(N_sample*(1-test_size)*(1-val_size))
 
-epochs = 5#int(n_iter / (n_train / batch_size))
+epochs = 25#int(n_iter / (n_train / batch_size))
 
 f= open("Trainning_INFO_Regression_.txt","w+")
 
@@ -62,7 +63,7 @@ f.write('INFO: Epochs:{} -- Batch size:{} \n'.format(epochs,batch_size))
 start=time.time()
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO_BAL'],classification=False)
-train_loader,test_loader,val_loader,train_s,test_s,val_s=Data_Loader(X, y, N_sample, batch_size,test_size, val_size)
+train_loader,test_loader,val_loader,train_s,test_s,val_s=Data_Loader(X, y, N_sample, batch_size,test_size, val_size, classification=False)
 
 
 class Net_R(nn.Module):
@@ -178,18 +179,18 @@ def train(model, criterion, optimizer, scheduler, epochs):
             #running_loss = 0.0
     
 
-
+"""
 # Training loop
 for i in range(epochs):
     f.write('Epoch: {} \n'.format(i+1))
-    train(net_R,loss_funtion,optimizer,scheduler,epochs)
-    print('Epoch: {}'.format(i))
     
+    print('Epoch: {}'.format(i))
+"""
+train(net_R,loss_func,optimizer,scheduler,epochs)
     
 print('Finished Training')
 
 """
-loss_train=np.asarray(loss_train)
 
 epoch=np.linspace(0,len(loss_train),len(loss_train))
 
@@ -201,7 +202,7 @@ plt.legend()
 plt.savefig('Training_Loss_Regression_.jpg')
 plt.close()
 
-loss_val=np.asarray(loss_val)
+
 
 epoch=np.linspace(0,len(loss_val),len(loss_val))
 
@@ -215,9 +216,11 @@ plt.close()
 """
 
 lr=np.asarray(lr)
+loss_train=np.asarray(loss_train)
+loss_val=np.asarray(loss_val)
 
 plt.plot(lr,loss_val,label='Validation loss')
-plt.plot(lr,loss_train,label='Train loss',color=r)
+plt.plot(lr,loss_train,label='Train loss',color='r')
 plt.xlabel('Learning Rate')
 plt.ylabel('Loss')
 plt.title('Train-Validation LR Loss - Regression')
@@ -229,7 +232,7 @@ plt.close()
 epoch=np.linspace(0,len(loss_val),len(loss_val))
 
 plt.plot(epoch,loss_val,label='Validation loss')
-plt.plot(epoch,loss_train,label='Train loss',color=r)
+plt.plot(epoch,loss_train,label='Train loss',color='r')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.title('Train-Validation Epochs Loss  - Regression')
@@ -300,7 +303,7 @@ AE=(abs(y_pred-y_test)*100)/(y_test)
 x = y_test
 y = AE
 
-fig = plt.figure(figsize=(5,8))
+fig = plt.figure(figsize=(5,6))
 
 gs = GridSpec(4,4)
 
