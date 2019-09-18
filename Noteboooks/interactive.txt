@@ -1,0 +1,41 @@
+###############################################  NOTAS DE  USUARIO PARA EJECUCIÓN DE SESIÓN INTERACTIVA/SLURM  ################################################
+
+
++++++++++++++++++++++++++++++++++++++++++++
++++	Comando srun			+++
++++++++++++++++++++++++++++++++++++++++++++
+
+El comando srun es multipropósito, puede ser usado para requerir nodos durante un uso interactivo, la sintaxis es:
+
+srun --pty bash
+
+En el caso de requerir recursos específicos la sintaxis es:
+
+srun -N 2 --ntasks-per-node=8 --pty bash #para personalizar los requerimientos de recursos, dirigirse a la documentación de slurm
+
+
++++++++++++++++++++++++++++++++++++++++++++
++++	Comando salloc			+++
++++++++++++++++++++++++++++++++++++++++++++
+
+
+La segunda opción consiste en reservar recursos y luego hacer uso de ellos de la siguiente manera:
+
+primero se solicitan los recursos con la siguiente sintaxis:
+
+salloc --nodes=1 --time=00:01:00
+
+Esto produce una salida tipo:
+
+salloc: Granted job allocation 263
+
+Luego se verifica el trabajo con squeue y se hace la conexión por ssh al nodo indicado.
+
+> squeue
+
+JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+  263     short     bash     user  R       0:04      1 node-18
+
+>ssh node-18
+>[user@node-18 ~]
+

@@ -1,0 +1,209 @@
+INFO: Epochs:100 -- Batch size:480 
+Epoch: 0 
+train Loss: 0.9648786693811416 <--> train Accuracy: 0 
+val Loss: 0.5970313495397568 <--> val Accuracy: 0 
+Epoch: 1 
+train Loss: 0.6007925087213516 <--> train Accuracy: 0 
+val Loss: 0.45272430330514907 <--> val Accuracy: 0 
+Epoch: 2 
+train Loss: 0.44463432431221006 <--> train Accuracy: 0 
+val Loss: 0.28395794168114663 <--> val Accuracy: 0 
+Epoch: 3 
+train Loss: 0.37205175518989564 <--> train Accuracy: 0 
+val Loss: 0.24476320892572404 <--> val Accuracy: 0 
+Epoch: 4 
+train Loss: 0.30779677838087083 <--> train Accuracy: 0 
+val Loss: 0.2830180461704731 <--> val Accuracy: 0 
+Epoch: 5 
+train Loss: 0.2662372079491615 <--> train Accuracy: 0 
+val Loss: 0.2088600830733776 <--> val Accuracy: 0 
+Epoch: 6 
+train Loss: 0.2453141701221466 <--> train Accuracy: 0 
+val Loss: 0.1963346141576767 <--> val Accuracy: 0 
+Epoch: 7 
+train Loss: 0.23259178638458253 <--> train Accuracy: 0 
+val Loss: 0.1796789576113224 <--> val Accuracy: 0 
+Epoch: 8 
+train Loss: 0.2234795919060707 <--> train Accuracy: 0 
+val Loss: 0.1930033053457737 <--> val Accuracy: 0 
+Epoch: 9 
+train Loss: 0.20644984349608422 <--> train Accuracy: 0 
+val Loss: 0.19888827454298735 <--> val Accuracy: 0 
+Epoch: 10 
+train Loss: 0.19495368272066116 <--> train Accuracy: 0 
+val Loss: 0.17895257443189622 <--> val Accuracy: 0 
+Epoch: 11 
+train Loss: 0.1917925465106964 <--> train Accuracy: 0 
+val Loss: 0.16801706492900848 <--> val Accuracy: 0 
+Epoch: 12 
+train Loss: 0.18138971589505673 <--> train Accuracy: 0 
+val Loss: 0.21252067029476165 <--> val Accuracy: 0 
+Epoch: 13 
+train Loss: 0.18343987569212913 <--> train Accuracy: 0 
+val Loss: 0.18514618895947932 <--> val Accuracy: 0 
+Epoch: 14 
+train Loss: 0.17498905785381794 <--> train Accuracy: 0 
+val Loss: 0.197553521245718 <--> val Accuracy: 0 
+Epoch: 15 
+train Loss: 0.17535267174243926 <--> train Accuracy: 0 
+val Loss: 0.1839295079559088 <--> val Accuracy: 0 
+Epoch: 16 
+train Loss: 0.1631403723359108 <--> train Accuracy: 0 
+val Loss: 0.18058857910335063 <--> val Accuracy: 0 
+Epoch: 17 
+train Loss: 0.1626652030646801 <--> train Accuracy: 0 
+val Loss: 0.22379849016666412 <--> val Accuracy: 0 
+Epoch: 18 
+train Loss: 0.15860343992710113 <--> train Accuracy: 0 
+val Loss: 0.1781834627687931 <--> val Accuracy: 0 
+Epoch: 19 
+train Loss: 0.15266121238470076 <--> train Accuracy: 0 
+val Loss: 0.17632405027747156 <--> val Accuracy: 0 
+Epoch: 20 
+train Loss: 0.1407622166723013 <--> train Accuracy: 0 
+val Loss: 0.19096932731568814 <--> val Accuracy: 0 
+Epoch: 21 
+train Loss: 0.13445777148008348 <--> train Accuracy: 0 
+val Loss: 0.195509278960526 <--> val Accuracy: 0 
+Epoch: 22 
+train Loss: 0.12940032348036767 <--> train Accuracy: 0 
+val Loss: 0.18003290690481663 <--> val Accuracy: 0 
+Epoch: 23 
+train Loss: 0.1250850734859705 <--> train Accuracy: 0 
+val Loss: 0.2355215774476528 <--> val Accuracy: 0 
+Epoch: 24 
+train Loss: 0.12584259875118733 <--> train Accuracy: 0 
+val Loss: 0.2180252807587385 <--> val Accuracy: 0 
+Epoch: 25 
+train Loss: 0.1177616135776043 <--> train Accuracy: 0 
+val Loss: 0.21753133334219454 <--> val Accuracy: 0 
+Epoch: 26 
+train Loss: 0.1127997014299035 <--> train Accuracy: 0 
+val Loss: 0.23754767425358295 <--> val Accuracy: 0 
+Epoch: 27 
+train Loss: 0.111556126922369 <--> train Accuracy: 0 
+val Loss: 0.21984373189508916 <--> val Accuracy: 0 
+Epoch: 28 
+train Loss: 0.10635652039200068 <--> train Accuracy: 0 
+val Loss: 0.25330803394317625 <--> val Accuracy: 0 
+Epoch: 29 
+train Loss: 0.11368431724607944 <--> train Accuracy: 0 
+val Loss: 0.24793720420449972 <--> val Accuracy: 0 
+Epoch: 30 
+train Loss: 0.09018892236053944 <--> train Accuracy: 0 
+val Loss: 0.26011049568653105 <--> val Accuracy: 0 
+Epoch: 31 
+train Loss: 0.08791556760668755 <--> train Accuracy: 0 
+val Loss: 0.26782935235649347 <--> val Accuracy: 0 
+Epoch: 32 
+train Loss: 0.08157855920493602 <--> train Accuracy: 0 
+val Loss: 0.283443837761879 <--> val Accuracy: 0 
+Epoch: 33 
+train Loss: 0.07660308130085468 <--> train Accuracy: 0 
+val Loss: 0.2944947753101587 <--> val Accuracy: 0 
+Epoch: 34 
+train Loss: 0.07667380455881358 <--> train Accuracy: 0 
+val Loss: 0.28785566359758374 <--> val Accuracy: 0 
+Epoch: 35 
+train Loss: 0.06992956917732954 <--> train Accuracy: 0 
+val Loss: 0.3180219440162182 <--> val Accuracy: 0 
+Epoch: 36 
+train Loss: 0.07313421331346034 <--> train Accuracy: 0 
+val Loss: 0.28025370828807356 <--> val Accuracy: 0 
+Epoch: 37 
+train Loss: 0.06310245286673308 <--> train Accuracy: 0 
+val Loss: 0.38409567609429357 <--> val Accuracy: 0 
+Epoch: 38 
+train Loss: 0.06819884419441223 <--> train Accuracy: 0 
+val Loss: 0.34784944154322145 <--> val Accuracy: 0 
+Epoch: 39 
+train Loss: 0.06775041891261935 <--> train Accuracy: 0 
+val Loss: 0.32326545847579835 <--> val Accuracy: 0 
+Epoch: 40 
+train Loss: 0.053772757202386855 <--> train Accuracy: 0 
+val Loss: 0.37761268943548204 <--> val Accuracy: 0 
+Epoch: 41 
+train Loss: 0.04970460357144475 <--> train Accuracy: 0 
+val Loss: 0.3528282669186592 <--> val Accuracy: 0 
+Epoch: 42 
+train Loss: 0.045056910011917355 <--> train Accuracy: 0 
+val Loss: 0.417489115819335 <--> val Accuracy: 0 
+Epoch: 43 
+train Loss: 0.048013952616602185 <--> train Accuracy: 0 
+val Loss: 0.40368238274008034 <--> val Accuracy: 0 
+Epoch: 44 
+train Loss: 0.04334984626621008 <--> train Accuracy: 0 
+val Loss: 0.4244377765804529 <--> val Accuracy: 0 
+Epoch: 45 
+train Loss: 0.04494490548968315 <--> train Accuracy: 0 
+val Loss: 0.4078589390963316 <--> val Accuracy: 0 
+Epoch: 46 
+train Loss: 0.041254359697923064 <--> train Accuracy: 0 
+val Loss: 0.4416918531432748 <--> val Accuracy: 0 
+Epoch: 47 
+train Loss: 0.04081697063520551 <--> train Accuracy: 0 
+val Loss: 0.40399090968072415 <--> val Accuracy: 0 
+Epoch: 48 
+train Loss: 0.039800452943891285 <--> train Accuracy: 0 
+val Loss: 0.44713154815137385 <--> val Accuracy: 0 
+Epoch: 49 
+train Loss: 0.03596390192396939 <--> train Accuracy: 0 
+val Loss: 0.4655526006966829 <--> val Accuracy: 0 
+Epoch: 50 
+train Loss: 0.031934162322431806 <--> train Accuracy: 0 
+val Loss: 0.4754258430749178 <--> val Accuracy: 0 
+Epoch: 51 
+train Loss: 0.0318879150878638 <--> train Accuracy: 0 
+val Loss: 0.48193054817616937 <--> val Accuracy: 0 
+Epoch: 52 
+train Loss: 0.029175048908218742 <--> train Accuracy: 0 
+val Loss: 0.5368216598778963 <--> val Accuracy: 0 
+Epoch: 53 
+train Loss: 0.02889594404026866 <--> train Accuracy: 0 
+val Loss: 0.5177939253672957 <--> val Accuracy: 0 
+Epoch: 54 
+train Loss: 0.02691694943699986 <--> train Accuracy: 0 
+val Loss: 0.6161350743472576 <--> val Accuracy: 0 
+Epoch: 55 
+train Loss: 0.03071480881422758 <--> train Accuracy: 0 
+val Loss: 0.5176331836730241 <--> val Accuracy: 0 
+Epoch: 56 
+train Loss: 0.02668763685040176 <--> train Accuracy: 0 
+val Loss: 0.5485376532375813 <--> val Accuracy: 0 
+Epoch: 57 
+train Loss: 0.02482916123699397 <--> train Accuracy: 0 
+val Loss: 0.5392113970965147 <--> val Accuracy: 0 
+Epoch: 58 
+train Loss: 0.027749633123166858 <--> train Accuracy: 0 
+val Loss: 0.5926629057526589 <--> val Accuracy: 0 
+Epoch: 59 
+train Loss: 0.026913533923216163 <--> train Accuracy: 0 
+val Loss: 0.58499316804111 <--> val Accuracy: 0 
+Epoch: 60 
+train Loss: 0.02131847998127341 <--> train Accuracy: 0 
+val Loss: 0.5814164073765278 <--> val Accuracy: 0 
+Epoch: 61 
+train Loss: 0.02345209180843085 <--> train Accuracy: 0 
+val Loss: 0.5665385612100363 <--> val Accuracy: 0 
+Epoch: 62 
+train Loss: 0.022321115359663964 <--> train Accuracy: 0 
+val Loss: 0.6501825988292694 <--> val Accuracy: 0 
+Epoch: 63 
+train Loss: 0.019003563539590686 <--> train Accuracy: 0 
+val Loss: 0.669409167394042 <--> val Accuracy: 0 
+Epoch: 64 
+train Loss: 0.0183472206722945 <--> train Accuracy: 0 
+val Loss: 0.6391067691147327 <--> val Accuracy: 0 
+Epoch: 65 
+train Loss: 0.01889366894029081 <--> train Accuracy: 0 
+val Loss: 0.6234988343715667 <--> val Accuracy: 0 
+Epoch: 66 
+train Loss: 0.021675309338606893 <--> train Accuracy: 0 
+val Loss: 0.6288989700376988 <--> val Accuracy: 0 
+Epoch: 67 
+train Loss: 0.02016942056361586 <--> train Accuracy: 0 
+val Loss: 0.6692426274716854 <--> val Accuracy: 0 
+Epoch: 68 
+train Loss: 0.02022017232142389 <--> train Accuracy: 0 
+val Loss: 0.6264497655630111 <--> val Accuracy: 0 
+Epoch: 69 

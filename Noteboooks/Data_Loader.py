@@ -14,6 +14,7 @@ import matplotlib.pylab as plt
 import pandas as pd
 import torch 
 import torch.nn as nn
+import fitsio 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
@@ -28,19 +29,24 @@ import os
 
 def Load_Files(file_1,file_2,N_sample,objts,classification=False):
     print('INFO:')
-    hdul = fits.open(file_1) # Open file 1 -- 'truth_DR12Q.fits'
-    info=hdul.info() # File info
-    data=hdul[1].data # Database of spectra with human-expert classifications
-    print('The file {} have {} objects. \n'.format(file_1,data.shape[0]))     
+    #hdul = fitsio.FITS(file_1) # Open file 1 -- 'truth_DR12Q.fits'
+    #info=hdul.info() # File info
+    hdul = fits.open(file_1,mode='denywrite') 
+    #data=hdul[1].read() # Database of spectra with human-expert classifications
+    data=hdul[1].data    
+    #print('The file {} have {} objects. \n'.format(file_1,data.shape[0]))     
 
     print('INFO:')
     # Reading data from data_dr12.fits. This file had the spectra from data dr12. 
-    hdul_2 = fits.open(file_2) # Open file 2 -- 'data_dr12.fits'
-    info2=hdul_2.info() # File info
+    #hdul_2 = fitsio.FITS(file_2) # Open file 2 -- 'data_dr12.fits'
+    #info2=hdul_2.info() # File info
+    #data2=hdul_2[1].read() # Database of spectra
+    #spectra=hdul_2[0].read() # Spectrum of each object
+    hdul_2 = fits.open(file_2,mode='denywrite') 
     data2=hdul_2[1].data # Database of spectra
     spectra=hdul_2[0].data # Spectrum of each object
 
-    print('The file {} have {} spectra. \n'.format(file_2,spectra.shape[0]))
+    #print('The file {} have {} spectra. \n'.format(file_2,spectra.shape[0]))
  
     	
     # Subset of PLATE parameters of both data
