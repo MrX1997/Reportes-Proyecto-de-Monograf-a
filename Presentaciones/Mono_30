@@ -1,0 +1,53 @@
+Monografia 30% Presentación
+Buenas dias mi nombre es Jairo Andres Saavedra Alfonso el hoy voy a exponer los avances de mi proyecto de monografia la cual explora la clasificación y determinación de Redshift de espectros astrofisicos mediante Redes Neuronales Convolucionales. 
+
+1. Introducción
+	
+Comenzemos por entender porque es importante conocer la clase espectral y el redshift de lo que observamos. 
+
+
+La exploración de espectros astrofisicos requiere de tener datos con una clasificación espectral acertada y un valor confiable de Redshift para poder realizar estudios astrofisicos y cosmologicos.
+
+Parte importante de concocer la clasificación espectral y el redshift de objetos astrofisicos es precisamente poder recrear mapas 3D de galaxias como el creado por el SDSS y mas importante aun poder observar y crear mapas de estructuras a gran escapa con presicion. Como el realizado por SDSS en base a la observacion de la distancia de QSO. 
+
+1.1 Introducción
+
+En el año 2016 fue diseñado un software para realizar la clasificación y determinación de redshift de los datos de eBOSS, la extensión de BOSS. Mediante eBOSS se pretendia determinar la historia de la expanción del  universo para lo cual RM encontro un radio de exito de 90.5% en clasificación y determinación de redshift para galaxias rojas luminosas. RM realizaba una comparación del los espectros con respecto a una base de datos de espectros arquetipos para encontrar la clase correspondiente mediante un ajuste. 
+
+Sin embargo, este metodo tenia un rendimiento bajo de clasificación para objetos fuera de LRG, debido a esto fue necesario involucrar a expertos en el proceso para que mediante inspección visual directa de los espectros se determinara su clasificación. Mediante este metodo ellos reconocian cararteristicas espectrales como lineas de absorcion y emisión para clasificación espectral. Esta clasificación y la determinació a ojo de el redshift era usado como base para alimentar ajustes automaticos de redshift mas precisos. 
+	
+2. Motivación 
+	
+Sin embargo estos metodos mencionados requieren de un alto poder computacional y de tiempo humano lo cual es tedioso si se tienen millones de espectros. De esta forma si consideramos el futuro cercano donde el proyecto DESI, encargado de medir el espectro de 11 millones de galaxias y cuasares para construir un mapa 3d del universo cercano hasta 11 billones de años luz, la tarea de clasificar y determinar redshift se vuelve indispendiosa. 
+
+De igual forma poder caracterizar cuasares para estudios cosmologicos y poder predecir su redshift a partir de sus espectros.
+
+De esta forma los objetivos de mi proyecto se enfocan en crear y evaluar diferentes estructuras de RNC para poder realizar, primero: una clasificacion espectral de estrellas, galaxias y cuasares. 
+y segundo: poder determinar el redshift de los mismos mediante regresión.
+cabe resaltar que se quiere usar el espectro completo como parametro y no cararteristicas particulares de los espectros.  
+
+4. Cronograma
+
+presentar cronograma
+
+
+
+4. Datos
+
+Para las puebras preliminares se trabajo con los datos observacionales del data release 12 de SDSS. En el cual se finaliza el proyecto BOSS, el cual mapeo la distribucion espacial de galaxias rojas luminosas y cuasares para el estudio de las oscilaciones acusticas de bariones. BOSS contiene el mas completo survey de espectro de E, G y QSO con 600 mil objetos clasificados y cararaterisados por redshift. 
+
+4.2 Datos
+
+Los espectro a trabajar estan distribuidos en longitudes de onda de 300 a 1000 nanometros. o 3000 a 10000 anstrongs. Donde se tiene Estrellas, de todo tipo espectral. Galaxias, cuasares y la particularidad de tener cuasares con lineas de absorcion anchas. Aqui se observa la similitud de los espectros de galaxias y QSO y precisamente esto es lo que se quiere distingir.  
+
+5. RNC 1.0
+
+De esta forma se presenta la primera estructura de RNC la cual posee una capa de entrada, donde se pasan como entrada los espectros normalizados de dimension 443 pixeles. Cada espectro pasa por dos capas convolucionales de 16 neuronas de salida con un kernel de dimension 2x1 evaluados en una funcion de activacion ReLU. Posteriormente pasan a una capa linal de 16 neuronas y finalmente se obtiene la clase predicha para estrellas galaxias qso o qso-bal. 
+
+ 
+
+
+
+6. RNC 2.0
+
+7. Matriz de confusión
