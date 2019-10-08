@@ -51,14 +51,14 @@ print('This net is brought to you by',device)
 # In[3]:
 
 
-N_sample=1000#80000
-batch_size=50#480
+N_sample=80000
+batch_size=240
 n_iter=10000
 test_size=0.2 # 20%
 val_size=0.25 # 25% of trainning size
 
 n_train=int(N_sample*(1-test_size)*(1-val_size))
-epochs = 3#int(n_iter / (n_train / batch_size))
+epochs = int(n_iter / (n_train / batch_size))
 
 
 
@@ -78,13 +78,13 @@ learning_rate=0.1
 class Net_C(nn.Module):
     def __init__(self):
         super(Net_C, self).__init__()
-        self.conv1 = nn.Conv1d(1, 100, 15,stride=2)
-        self.conv2 = nn.Conv1d(100, 100, 15,stride=2)
-        self.conv3 = nn.Conv1d(100, 100, 15,stride=2)
-        self.conv4 = nn.Conv1d(100, 100, 15,stride=2)
+        self.conv1 = nn.Conv1d(1, 64, 15,stride=2)
+        self.conv2 = nn.Conv1d(64,128, 15,stride=2)
+        #self.conv3 = nn.Conv1d(100, 100, 15,stride=2)
+        #self.conv4 = nn.Conv1d(100, 100, 15,stride=2)
         self.pool = nn.MaxPool1d(2, 1)
         #self.fc1 = nn.Linear(3328, 16)
-        self.fc1 = nn.Linear(1300, 16)
+        self.fc1 = nn.Linear(12672, 16)
         self.fc2 = nn.Linear(16, 4)
         self.dropout=nn.Dropout(0.5)
         self.bn=nn.BatchNorm1d(16)
@@ -96,9 +96,9 @@ class Net_C(nn.Module):
         ##x = self.dropout(x)
         x = self.pool(F.relu(self.conv2(x)))
         #x = self.dropout(x)
-        x = self.pool(F.relu(self.conv3(x)))
+        #x = self.pool(F.relu(self.conv3(x)))
         #x = self.dropout(x)
-        x = self.pool(F.relu(self.conv4(x)))
+        #x = self.pool(F.relu(self.conv4(x)))
         x = self.dropout(x)
         x = x.view(in_size, -1)
         x = F.relu(self.fc1(x))     

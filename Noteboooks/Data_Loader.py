@@ -23,6 +23,13 @@ from torch.autograd import Variable
 import torch.utils.data
 import time
 import os
+from astropy.modeling import models
+import astropy.units as u
+from specutils import Spectrum1D, SpectralRegion
+from specutils.fitting import find_lines_derivative
+from specutils.fitting import fit_generic_continuum
+from specutils.manipulation import gaussian_smooth
+from specutils.analysis import gaussian_sigma_width, gaussian_fwhm, fwhm, fwzi,line_flux,snr_derived,equivalent_width
 
 
 
@@ -165,26 +172,63 @@ def Load_Files(file_1,file_2,N_sample,objts,classification=False):
         spectra_=np.zeros((N_sample,886))
             
         j=0
+        kernel_size=5
+        flux_threshold=1.1
+        parameters=np.zeros((N_sample,7)) #Number of lines // FHWM of max emission line // EW of max emission line // Spectrum Mean // Spectrum STDV // Spectrum Flux Integral // Spectrum SNR  
         for i in indi:
             k=indi1[j,1]
-            spectra_[j,:]=spectra[k,:]
-            j=j+1    
+            x=np.linspace(3600,10500,443)
+            zero_spectrum=spectra[k,:443]
+            spectrum = Spectrum1D(flux=zero_spectrum*u.Jy, spectral_axis=x*u.AA)
             
-        spectra_=pd.DataFrame(spectra_)
-        X=spectra_.values
+            #Continuum fit and gaussian smooth
+            g1_fit = fit_generic_continuum(spectrum)
+            y_continuum_fitted = g1_fit(x*u.AA)
+            spec_nw_2=spectrum/y_continuum_fitted
+            spectrum_smooth = gaussian_smooth(spec_nw_2,kernel_size)
+
+            #Number of lines
+            lines_1 = find_lines_derivative(spectrum_smooth, flux_threshold=flux_threshold)
+            l=lines_1[lines_1['line_type']=='emission']
+            number_lines=l['line_center_index'].shape[0]
+            parameters[j,0]=number_lines
+
+            #FWHM
+            parameters[j,1]=fwhm(spectrum_smooth).value
+
+            #EW
+            parameters[j,2]=equivalent_width(spectrum_smooth).value
+
+            #Spectrum Mean
+            parameters[j,3]=np.mean(spectrum_smooth.flux)
+
+            #Spectrum STDV
+            parameters[j,4]=np.std(spectrum_smooth.flux)
+
+            #Spectrum Flux Integral
+            parameters[j,5]=line_flux(spectrum_smooth).value
+
+            #Spectrum SNR
+            parameters[j,6]=snr_derived(spectrum_smooth).value
+            j+=1  
+
+        d={'Lines_Number':parameters[:,0],'FHWM':parameters[:,1],'EW':parameters[:,2],'Mean':parameters[:,3],'STDV':parameters[:,4],'STDV':parameters[:,4],'Spectrum_Flux':parameters[:,5],'SNR':parameters[:,6]}
+
+        parameters=pd.DataFrame(data=d)
+        #X=spectra_.values
         
-        mean_flx= np.ma.average(X[:,:443],axis=1)
-        ll=(X[:,:443]-mean_flx.reshape(-1,1))**2
-        aveflux=np.ma.average(ll, axis=1)
-        sflux = np.sqrt(aveflux)
-        X = (X[:,:443]-mean_flx.reshape(-1,1))/sflux.reshape(-1,1)        
+        #mean_flx= np.ma.average(X[:,:443],axis=1)
+        #ll=(X[:,:443]-mean_flx.reshape(-1,1))**2
+        #aveflux=np.ma.average(ll, axis=1)
+        #sflux = np.sqrt(aveflux)
+        #X = (X[:,:443]-mean_flx.reshape(-1,1))/sflux.reshape(-1,1)        
         
         y=sample_objects['Z_VI']
         y=np.array(y,dtype=float)
-        y_max=np.max(y)
-        y=y/y_max
+        #y_max=np.max(y)
+        #y=y/y_max
         
-        return X,y
+        return parameters,y
             
     stars=obj.loc[obj['CLASS_PERSON']==1]
     galaxies=obj.loc[obj['CLASS_PERSON']==4]
@@ -249,8 +293,8 @@ def Data_Loader(X, y, N_sample, batch_size, test_size, val_size,classification=T
         xt=X_train[i,:].reshape(1,-1)
         if(classification==True):
             train_data.append([Variable(torch.tensor(xt, dtype=torch.float)), torch.tensor(y_train[i], dtype=torch.long)])
-        else:
-            train_data.append([Variable(torch.tensor(xt, dtype=torch.float)), torch.tensor(y_train[i], dtype=torch.float)])
+        #else:
+            #train_data.append([Variable(torch.tensor(xt, dtype=torch.float)), torch.tensor(y_train[i], dtype=torch.float)])
     
     train_loader = torch.utils.data.DataLoader(train_data, shuffle=True, batch_size=batch_size)
 
@@ -259,8 +303,8 @@ def Data_Loader(X, y, N_sample, batch_size, test_size, val_size,classification=T
         xtst=X_test[i,:].reshape(1,-1)
         if(classification==True):
             test_data.append([Variable(torch.tensor(xtst, dtype=torch.float)), torch.tensor(y_test[i], dtype=torch.long)])
-        else:
-            test_data.append([Variable(torch.tensor(xtst, dtype=torch.float)), torch.tensor(y_test[i], dtype=torch.float)])
+        #else:
+            #test_data.append([Variable(torch.tensor(xtst, dtype=torch.float)), torch.tensor(y_test[i], dtype=torch.float)])
     
     test_loader = torch.utils.data.DataLoader(test_data, shuffle=True, batch_size=batch_size_test)
     
@@ -269,8 +313,8 @@ def Data_Loader(X, y, N_sample, batch_size, test_size, val_size,classification=T
         xv=X_val[i,:].reshape(1,-1)
         if(classification==True):
             val_data.append([Variable(torch.tensor(xv, dtype=torch.float)), torch.tensor(y_val[i], dtype=torch.long)])
-        else:
-            val_data.append([Variable(torch.tensor(xv, dtype=torch.float)), torch.tensor(y_val[i], dtype=torch.float)])
+        #else:
+            #val_data.append([Variable(torch.tensor(xv, dtype=torch.float)), torch.tensor(y_val[i], dtype=torch.float)])
     
     val_loader = torch.utils.data.DataLoader(val_data, shuffle=True, batch_size=batch_size_val)
 

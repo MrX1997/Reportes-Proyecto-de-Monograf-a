@@ -45,7 +45,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('This net is brought to you by',device)
 
 
-N_sample=80000
+N_sample=100#80000
 batch_size=240
 n_iter=10000
 
@@ -63,6 +63,10 @@ f.write('INFO: Epochs:{} -- Batch size:{} \n'.format(epochs,batch_size))
 start=time.time()
 
 X,y=Load_Files('truth_DR12Q.fits','data_dr12.fits',N_sample,['QSO'],classification=False)
+#X=X.values
+print(X,y)
+
+"""
 train_loader,test_loader,val_loader,train_s,test_s,val_s=Data_Loader(X, y, N_sample, batch_size,test_size, val_size, classification=False)
 
 
@@ -322,3 +326,4 @@ f.close()
 
 #cmd='shutdown 0'
 #os.system(cmd)
+"""
